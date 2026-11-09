@@ -1,0 +1,19 @@
+# Secrets and personal data (T6)
+.env
+data/
+*.db
+*.db-*
+*.sqlite*
+*.fit
+hevy*.csv
+workouts*.csv
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Frontend
+node_modules/
+frontend/dist/
