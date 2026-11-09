@@ -87,3 +87,8 @@ def test_morning_view_excludes_today(cfg):
     assert evening.today_load == 600 and evening.today_hard and evening.consecutive_hard == 1
     assert morning.today_load == 0 and not morning.today_hard and morning.consecutive_hard == 0
     assert evening.acute > morning.acute
+
+
+def test_untrained_today_is_not_counted_as_a_rest_day(cfg):
+    daily = {D - timedelta(days=i): 300.0 for i in range(1, 60)}
+    assert load_metrics(daily, set(), D, cfg).ratio == pytest.approx(1.0)

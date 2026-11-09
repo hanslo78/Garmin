@@ -112,8 +112,12 @@ def load_metrics(
 
     first = min(daily) if daily else ref
     start = min(first, ref - timedelta(days=cfg["chronic_days"]))
-    acute = ewma_series(daily, start, ref, cfg["acute_days"])[ref]
-    chronic = ewma_series(daily, start, ref, cfg["chronic_days"])[ref]
+    # Until something is logged today, today is "not trained yet", not a rest day:
+    # the averages then run through yesterday so the morning ratio is not dragged down.
+    last = ref if daily.get(ref, 0.0) > 0 else ref - timedelta(days=1)
+    start = min(start, last)
+    acute = ewma_series(daily, start, last, cfg["acute_days"])[last]
+    chronic = ewma_series(daily, start, last, cfg["chronic_days"])[last]
     ratio = round(acute / chronic, 2) if chronic >= cfg["min_chronic_load"] else None
 
     def window(offset: int, length: int = 7) -> float:
